@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PackageCollector": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}
