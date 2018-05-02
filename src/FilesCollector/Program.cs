@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using PackageCollector.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace PackageCollector
             appSettings = section.Get<AppSettings>();
 
             PackageListBuilder packageListBuilder = new PackageListBuilder();
-            packageListBuilder.LanguageFolders = appSettings.LangFoldersToProcess;
+            packageListBuilder.RelevantCultures = appSettings.RelevantCultures;
             packageListBuilder.PackageNames = appSettings.PackageNames;
             packageListBuilder.VersionSuffixes = appSettings.VersionSuffixes;
             packageListBuilder.PackagesRoot = appSettings.SourcePackagesRoot;

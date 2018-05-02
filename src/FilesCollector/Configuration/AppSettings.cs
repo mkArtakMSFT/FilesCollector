@@ -8,7 +8,7 @@ namespace PackageCollector.Configuration
     {
         public string[] PackageNames { get; set; }
 
-        public string[] LangFoldersToProcess { get; set; }
+        public string[] RelevantCultures { get; set; }
 
         public string SourcePackagesRoot { get; set; }
 

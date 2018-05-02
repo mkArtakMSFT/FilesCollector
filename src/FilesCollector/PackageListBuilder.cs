@@ -11,7 +11,7 @@ namespace PackageCollector
     {
         public string PackagesRoot { get; set; }
 
-        public IEnumerable<string> LanguageFolders { get; set; }
+        public IEnumerable<string> RelevantCultures { get; set; }
 
         public IEnumerable<string> PackageNames { get; set; }
 
@@ -23,18 +23,23 @@ namespace PackageCollector
             return Task<IDictionary<string, string>>.Run(() =>
             {
                 IDictionary<string, string> packageMap = new ConcurrentDictionary<string, string>();
-                foreach (string languageFolder in this.LanguageFolders.Select(item => Path.Combine(this.PackagesRoot, item)))
+                foreach (string rawPackageName in this.PackageNames)
                 {
-                    foreach (string rawPackageName in this.PackageNames)
+                    foreach (string cultureInfo in this.RelevantCultures)
                     {
-                        string[] packageFileNames = VersionSuffixes.Select(item => $"{rawPackageName}.*{item}.nupkg").ToArray();
+                        string code = cultureInfo.Split('/')[1];
+                        if (code != string.Empty)
+                        {
+                            code = $".{code}";
+                        }
+
+                        string[] packageFileNames = VersionSuffixes.Select(v => $"{rawPackageName}{code}.{v}.nupkg").ToArray();
                         foreach (var packageName in packageFileNames)
                         {
-                            IEnumerable<string> matchingPackages = Directory.EnumerateFiles(languageFolder, packageName, SearchOption.TopDirectoryOnly);
-                            string matchingPackage = matchingPackages.OrderBy(item => item.Length).FirstOrDefault();
-                            if (matchingPackage != null)
+                            string package = Path.Combine(this.PackagesRoot, packageName);
+                            if (File.Exists(package))
                             {
-                                packageMap[Path.GetFileName(matchingPackage)] = matchingPackage;
+                                packageMap[packageName] = package;
                             }
                         }
                     }
